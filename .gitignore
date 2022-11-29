@@ -1,3 +1,7 @@
+# emacs
+*.*~
+*~
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -50,6 +54,7 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+.dumbjumpignore
 
 # Translations
 *.mo
@@ -70,6 +75,10 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/_templates/
+docs/_static/
+
+
 
 # PyBuilder
 target/
@@ -127,3 +136,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#Development
+devel/
