@@ -51,11 +51,15 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#demo-example">Demo example</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#when-values-are-instances-of-container-types">when values are instances of container types</a>
+    <li class="toctree-l3"><a class="reference internal" href="#behaviour-when-values-are-instances-of-container-types">Behaviour when values are instances of container types</a>
     </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#known-bugs-and-caveats">Known bugs and Caveats</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#endnotes">EndNotes</a>
+    </li>
+        </ul>
     </li>
     </ul>
                 </li>
@@ -84,9 +88,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="addict-tracking-changes">addict-tracking-changes</h1>
+                <h1 id="addict-tracking-changes"><a href="https://github.com/Monallabs-org/addict-tracking-changes">addict-tracking-changes</a></h1>
 <h2 id="introduction">Introduction</h2>
-<p>Originally, this repository was a fork of <a href="addict">https://github.com/mewwts/addict</a> by Mats Julian Olsen.
+<p>Originally, this repository was a fork of <a href="https://github.com/mewwts/addict">addict</a> by Mats Julian Olsen.
 Overtime, it has substatially diverged in functionality and codebase that it seemed to make
 sense to breakout as its own repository. </p>
 <p>The original addict:  provides an alternative and succient interface to manipulate a dictionary. This is especially
@@ -114,7 +118,7 @@ body.query.filtered.filter.term.created_by = 'Mats'
 <p>This repo builds on original addict and adds contraptions to track key additions in the dictionary.
 This features comes in quite handy in building reactive webapps where one has to respond 
 to all the changes made on the browser. Addict-tracking-changes is the underpinning
-data-structure in <a href="ofjustpy">https://github.com/Monallabs-org/addict-tracking-changes</a>: a python based webframework build from <a href="justpy">https://github.com/justpy-org/justpy</a></p>
+data-structure in <a href="https://github.com/Monallabs-org/ofjustpy">ofjustpy</a>: a python based webframework build from <a href="https://github.com/justpy-org/justpy">justpy</a></p>
 <p>The functions relevant to tracking changed history are:
 <code>get_changed_history</code> and <code>clear_changed_history</code>. 
 The <code>get_changed_history</code> returns an iterator of XPath style paths like <code>/a/b/c/e</code> (see <a href="#demo-example">Demo example</a>). </p>
@@ -129,11 +133,11 @@ body.query.filtered.query.match.description = 'addictive'
 body.query.filtered.filter.term.created_by = 'Mats'
 
 for changed_path in body.get_changed_history():
-    &lt;work with changed_path
+    #&lt;work with changed_path&gt;
 
 body.clear_changed_history()
 </code></pre>
-<h3 id="when-values-are-instances-of-container-types">when values are instances of container types</h3>
+<h3 id="behaviour-when-values-are-instances-of-container-types">Behaviour when values are instances of container types</h3>
 <p>addict works as expected when the values of keys are simple data types (such as string, int, float, etc.). However, for container types such as dict, list, tuples, etc. the behaviour 
 is somewhat differs. </p>
 <ul>
@@ -202,6 +206,10 @@ for _ in oj.dictWalker(x):
     oj.dnew(cjs_cfg, _[0], _[1])
 
 </code></pre>
+<h3 id="endnotes">EndNotes</h3>
+<ul>
+<li>Developed By: webworks.monallabs.in</li>
+</ul>
               
             </div>
           </div><footer>
@@ -244,5 +252,5 @@ for _ in oj.dictWalker(x):
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2022-12-03 11:42:39.160173+00:00
+Build Date UTC : 2022-12-03 13:35:39.410933+00:00
 -->
