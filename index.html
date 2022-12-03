@@ -46,8 +46,16 @@
     <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#usage-and-examples">Usage and examples</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#caveats">Caveats</a>
+    <li class="toctree-l3"><a class="reference internal" href="#demo-example">Demo example</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#when-values-are-instances-of-container-types">when values are instances of container types</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#known-bugs-and-caveats">Known bugs and Caveats</a>
     </li>
     </ul>
                 </li>
@@ -81,13 +89,108 @@
 <p>Originally, this repository was a fork of <a href="addict">https://github.com/mewwts/addict</a> by Mats Julian Olsen.
 Overtime, it has substatially diverged in functionality and codebase that it seemed to make
 sense to breakout as its own repository. </p>
+<p>The original addict:  provides an alternative and succient interface to manipulate a dictionary. This is especially
+useful when dealing with heavily nested dictionaries. As example (taken from https://github.com/mewwts/addict)
+a dictionary created using standard python dictionary interface looks as follows:</p>
+<pre><code class="language-python">body = {
+    'query': {
+        'filtered': {
+            'query': {
+                'match': {'description': 'addictive'}
+            },
+            'filter': {
+                'term': {'created_by': 'Mats'}
+            }
+        }
+    }
+}`
+
+</code></pre>
+<p>can be summarized to following three lines:</p>
+<pre><code class="language-python">body = Dict()
+body.query.filtered.query.match.description = 'addictive'
+body.query.filtered.filter.term.created_by = 'Mats'
+</code></pre>
+<p>This repo builds on original addict and adds contraptions to track key additions in the dictionary.
+This features comes in quite handy in building reactive webapps where one has to respond 
+to all the changes made on the browser. Addict-tracking-changes is the underpinning
+data-structure in <a href="ofjustpy">https://github.com/Monallabs-org/addict-tracking-changes</a>: a python based webframework build from <a href="justpy">https://github.com/justpy-org/justpy</a></p>
+<p>The functions relevant to tracking changed history are:
+<code>get_changed_history</code> and <code>clear_changed_history</code>. 
+The <code>get_changed_history</code> returns an iterator of XPath style paths like <code>/a/b/c/e</code> (see <a href="#demo-example">Demo example</a>). </p>
 <h2 id="usage-and-examples">Usage and examples</h2>
-<h2 id="caveats">Caveats</h2>
+<h3 id="installation">Installation</h3>
+<p>This project is not on PyPI. Its a simple package with no third party dependency. 
+Simply clone from github and include the source directory in your PYTHONPATH. </p>
+<h3 id="demo-example">Demo example</h3>
+<pre><code class="language-python">from addict import Dict
+body = Dict()
+body.query.filtered.query.match.description = 'addictive'
+body.query.filtered.filter.term.created_by = 'Mats'
+
+for changed_path in body.get_changed_history():
+    &lt;work with changed_path
+
+body.clear_changed_history()
+</code></pre>
+<h3 id="when-values-are-instances-of-container-types">when values are instances of container types</h3>
+<p>addict works as expected when the values of keys are simple data types (such as string, int, float, etc.). However, for container types such as dict, list, tuples, etc. the behaviour 
+is somewhat differs. </p>
+<ul>
+<li>dicts 
+are treated as opaque object just like simple data types</li>
+</ul>
+<pre><code class="language-python">from addict import Dict
+
+mydict = Dict()
+mydict.a.b.c = {'kk': 1}
+mydict.a.b.e = {'dd': 1}
+
+for _ in mydict.get_changed_history():
+    print(_) 
+</code></pre>
+<p>will print</p>
+<pre><code>/a/b/c
+/a/b/e
+</code></pre>
+<p>and not </p>
+<pre><code>/a/b/cc/kk
+/a/b/e/dd
+</code></pre>
+<ul>
+<li>lists
+are seen as container, i.e., <code>get_changed_history</code> will report path for each element of
+the list </li>
+</ul>
+<pre><code class="language-python">from addict import Dict
+
+mydict = Dict()
+
+mydict.a.b = [1, [1]]
+mydict.a.c = [2, [2, [3]]]
+</code></pre>
+<p>get_changed_history will report following paths:</p>
+<pre><code>            &quot;/a/b/0&quot;,
+            &quot;/a/b/1/0&quot;,
+            &quot;/a/c/0&quot;,
+            &quot;/a/c/1/0&quot;,
+            &quot;/a/c/1/1/0&quot;,
+</code></pre>
+<ul>
+<li>
+<p>tuple 
+tuple  behave same as dict</p>
+</li>
+<li>
+<p>sets
+sets behave same as dict</p>
+</li>
+</ul>
+<h2 id="known-bugs-and-caveats">Known bugs and Caveats</h2>
 <ol>
 <li>Only tracks  field additions.  Deletions and updates are not tracked. </li>
 <li>freeze doesn't guards against deletions</li>
-<li></li>
-<li>building dict from another dict following expression wont' work</li>
+<li>building dict from another dict as shown in following expression wont' work</li>
 </ol>
 <pre><code class="language-python">cjs_cfg = Dict(x, track_changes=True)
 </code></pre>
@@ -141,5 +244,5 @@ for _ in oj.dictWalker(x):
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2022-12-03 04:45:34.696669+00:00
+Build Date UTC : 2022-12-03 11:42:39.160173+00:00
 -->
