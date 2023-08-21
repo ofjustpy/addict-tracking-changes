@@ -3,7 +3,7 @@ addict-tracking-changes Library Documentation
 
 addict-tracking-changes is a Python library that provides a custom Dict class that enhances the functionality of Python dictionaries. It tracks changes made to the dictionary, allows freezing and unfreezing of keys, and provides utility functions for working with the dictionary.
 
-Note: Its recommended to use dpath.new to create or set a new value for tracking to work properly. The dot expression also tested to work as well. 
+Note: Its recommended to use dpath.new to create or set a new value for tracking to work properly. The dot expression also work and is tested.
 
 Originally, this repository was a fork of `addict <https://github.com/mewwts/addict>`_ by Mats Julian Olsen.
 Overtime, it has substantially diverged in functionality and codebase that it seemed to make
@@ -129,7 +129,30 @@ Instead, use:
    for _ in oj.dictWalker(x):
        oj.dnew(cjs_cfg, _[0], _[1])
 
+4. Use TrackedList for tracking nested list
+   
 
+.. code-block:: python
+		
+    from addict_tracking_changes import Dict, TrackedList
+    trackerprop = Dict(track_changes = True)
+    trackerprop.a.b = [1, TrackedList([1], track_changes=True)]
+    trackerprop.a.c = [2, TrackedList([2, TrackedList([3], track_changes=True)
+                                   ], track_changes=True)
+				   ]
+which when asked changed history will output as follows:
+
+.. code-block:: python
+		
+   print(list(trackerprop.get_changed_history()))
+
+output
+.. code-block:: python
+		
+   ['/a/b/0', '/a/b/1/0', '/a/c/0', '/a/c/1/0', '/a/c/1/1/0']
+
+
+       
 Class: Dict
 -----------
 
