@@ -207,8 +207,9 @@ class Dict(dict):
             return type(item)(cls._hook(elem) for elem in item)
         return item
 
+    
     def __getattr__(self, item):
-        # print ("in __getattr__ for : ", item)
+        #print ("in __getattr__ for : ", item)
         # _getattr is called when item is already present in the dict
         # but it may not be part of the tracker; removed via clear_changed_history
         child_item = super(Dict, self).__getitem__(item)
@@ -224,6 +225,11 @@ class Dict(dict):
             object.__setattr__(child_item, "__breadcrumb_parent_dict_key", item)
 
             pass
+
+        # check if child_item is of type OpaqueDict 
+        if isinstance(child_item, OpaqueDict):
+            # return the original dict
+            return child_item.value
 
         return child_item
 
