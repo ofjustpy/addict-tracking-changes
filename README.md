@@ -165,7 +165,18 @@ output
 ```bash
 ['/a/b/0', '/a/b/1/0', '/a/c/0', '/a/c/1/0', '/a/c/1/1/0']
 ```
+5. Do not use `Dict(track_changes=False)` as value. `get_changed_history` will not work
+```
+track_dict.k = Dict()
+```
+`get_changed_history will be empty
 
+
+6. Using empty `Dict(track_changes=True)` wil not show up in history
+```
+track_dict.q = Dict(track_changes=True)
+```
+`get_changed_history` will not report `/q`
 
 ## APIs
 | API                                                  | Description                                        |

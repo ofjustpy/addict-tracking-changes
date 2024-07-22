@@ -26,6 +26,14 @@ import copy
 import sys
 import traceback
 from collections import UserList
+from typing import Any, NamedTuple
+
+class OpaqueDict(NamedTuple):
+    """
+    Hide dict from addict/changed history
+    """
+    value: Any
+    pass
 
 from .trackedlist import TrackedList
 
@@ -111,7 +119,12 @@ class Dict(dict):
                 self[name] = value
 
     def __setitem__(self, name, value):
-
+        # A Dict(track_changes=False) messes up the history calculations
+        # using OpaqueDict to wrap it
+        if type(value) == type(self):
+            if (object.__getattribute__(value, "__track_changes")) == False:
+                value = OpaqueDict(value)
+                
         isFrozen = hasattr(self, "__frozen") and object.__getattribute__(
             self, "__frozen"
         )
@@ -221,7 +234,15 @@ class Dict(dict):
         #     object.__getattribute__(self, "__tracker").add((key))
 
         # === !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ===
-        return self.__getattr__(key)
+        value = self.__getattr__(key)
+        if isinstance(value, OpaqueDict):
+            # return the original dict
+            return value.value
+
+
+        #return self.__getattr__(key)
+        return value
+    
 
     def __missing__(self, name):
         if object.__getattribute__(self, "__frozen"):
